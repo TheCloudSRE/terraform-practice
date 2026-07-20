@@ -4,7 +4,21 @@ data "aws_vpc" "selected" {
   id = "vpc-0ff1995e460cdf12c" # Replace with your actual VPC ID
 }
 
-# 2.. Create a Security Group inside the specified VPC
+resource "aws_instance" my_instance {
+  ami           = var.ami_id  # Amazon Linux 2 AMI
+  instance_type = var.instance_type
+  subnet_id              = "subnet-0a8e297680095158c"
+  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+    tags = {
+    Name = var.tags
+  }
+}
+
+resource "aws_s3_bucket" my_bucket {
+  bucket = var.bucket_name # Replace with a unique bucket name
+  }
+
+# 3. Create a Security Group inside the specified VPC
 resource "aws_security_group" "instance_sg" {
   name        = "ec2-security-group"
   description = "Security group for EC2 instance"
@@ -24,15 +38,3 @@ resource "aws_security_group" "instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-#3. Create Instance resource
-resource "aws_instance" my_instance {
-  ami           = var.ami_id  # Amazon Linux 2 AMI
-  instance_type = var.instance_type
-  subnet_id              = "subnet-0a8e297680095158c"
-  vpc_security_group_ids = [aws_security_group.instance_sg.id]
-    tags = {
-    Name = var.tags
-  }
-}
-
