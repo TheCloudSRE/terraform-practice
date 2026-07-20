@@ -1,4 +1,5 @@
 
+
 # 1. Reference your existing custom VPC using its ID
 data "aws_vpc" "selected" {
   id = "vpc-0ff1995e460cdf12c" # Replace with your actual VPC ID
@@ -6,7 +7,7 @@ data "aws_vpc" "selected" {
 
 # 2.. Create a Security Group inside the specified VPC
 resource "aws_security_group" "instance_sg" {
-  name        = "ec2-security-group1"
+  name        = "ec2-security-group2"
   description = "Security group for EC2 instance"
   vpc_id      = data.aws_vpc.selected.id # Explicitly links the SG to your VPC
 
