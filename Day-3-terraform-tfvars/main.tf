@@ -29,7 +29,7 @@ resource "aws_security_group" "instance_sg" {
 resource "aws_instance" my_instance {
   ami           = var.ami_id  # Amazon Linux 2 AMI
   instance_type = var.instance_type
-  subnet_id              = "subnet-0a8e297680095158c"
+  subnet_id     = "subnet-0a8e297680095158c"
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
     tags = {
     Name = var.tags
