@@ -7,7 +7,7 @@ resource "aws_instance" my_instance {
   instance_type = "t3.micro"
   subnet_id     = "subnet-0ba09904282378fe5"
       tags = {
-    Name = "MyInstanceUpdated"
+    Name = "MyInstanceUpdatedFromWindows"
   }
 }
 
