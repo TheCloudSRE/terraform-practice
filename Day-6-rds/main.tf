@@ -64,3 +64,16 @@ resource "aws_security_group" "custom_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+
+resource "aws_db_instance" "replica" {
+    identifier              = "mydbinstance-replica"
+    instance_class          = "db.t3.micro"
+    engine                  = "mysql"
+    engine_version          = "8.0"
+    publicly_accessible     = false
+    db_subnet_group_name    = aws_db_subnet_group.custom_rds_subnet_group.id
+    vpc_security_group_ids  = [aws_security_group.custom_sg.id]
+    replicate_source_db     = aws_db_instance.custom_rds.arn
+    skip_final_snapshot     = true
+    }
