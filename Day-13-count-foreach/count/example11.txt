@@ -1,0 +1,63 @@
+
+// Example showing use of `count` to create multiple resources
+variable "instance_count" {
+	description = "Number of resources to create"
+	type        = number
+	default     = 3
+}
+
+variable "create_resources" {
+	description = "Whether to create resources. If false, count becomes 0"
+	type        = bool
+	default     = true
+}
+
+// null_resource is convenient for examples/demos because it has no external provider requirements
+resource "null_resource" "example" {
+	count = var.create_resources ? var.instance_count : 0 
+    #This line uses a ternary operator (condition ? true_val : false_val) to decide the resource count:
+    #
+
+	triggers = {
+		index = tostring(count.index)
+		name  = "example-${count.index}"
+	}
+}
+
+// Outputs demonstrating how to reference resources created with count
+output "resource_names" {
+	description = "Names of created null resources"
+	value       = [for r in null_resource.example : r.triggers.name]
+}
+
+output "resource_count" {
+	description = "Number of null resources created"
+	value       = length(null_resource.example)
+}
+
+// Example of using count with conditional per-item creation
+variable "users" {
+	type = list(object({ name = string, create = bool }))
+	default = [
+		{ name = "alice", create = true },
+		{ name = "bob",   create = false },
+		{ name = "carol", create = true },
+	]
+}
+
+resource "null_resource" "user_item" {
+	// create one resource per user only when user.create is true
+	count = length([for u in var.users : u if u.create])
+    # Filters the list to only include objects where create is true ([alice, carol]), 
+    #then takes its length to set count = 2.
+
+	triggers = {
+		user_name = element([for u in var.users : u.name if u.create], count.index)
+	}
+}
+
+output "created_users" {
+	value = [for r in null_resource.user_item : r.triggers.user_name]
+    
+}
+
